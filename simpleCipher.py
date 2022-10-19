@@ -24,8 +24,10 @@ def main():
     # print("Encrypted or Decrypted String\t\t: ", cipher(strInput))
     sg.theme('Dark')
 
+
     layout = [  [sg.Text('Enter String to Encrypt or Decrypt')],
-                [sg.InputText(key='-strInput-', change_submits=True, size=(39,1))],
+                [sg.InputText(key='-strInput-', change_submits=True, size=(35,1))],
+                [sg.Text('Default Key : '),sg.InputText(key='-key-', size=(10,1), default_text="xyz", change_submits=True)],
                 [sg.Text(key='-Output-'), sg.Button('Copy')] ]
     
     # Create the Window
@@ -36,11 +38,16 @@ def main():
         if event in (None, 'Cancel'):
             break
         # if -strInput- changed, update the window
-        if event == '-strInput-':
-            window['-Output-'].update(cipher(values['-strInput-']))
+        if event == '-strInput-' or event == '-key-':
+            # if -strInput- is not empty
+            if values['-strInput-']:
+                window['-Output-'].update(cipher(values['-strInput-'], values['-key-']))
         if event == 'Copy':
             # copy the output to the clipboard
             sg.clipboard_set(window['-Output-'].get())
+        # if -key- over 3 characters, update the window
+        if len(values['-key-']) > 3 or len(values['-key-']) < 3:
+            window['-Output-'].update('Key must be exactly 3 characters')
     window.close()
 
 if __name__ == '__main__':
